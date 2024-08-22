@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Class to JSON Converter</title>
+</head>
+
+<body>
+    <h1>Java Class to JSON Converter</h1>
+    <textarea id="javaClass" rows="20" cols="50" placeholder="Paste your Java class here"></textarea><br><br>
+    <button onclick="convertToJSON()">Convert to JSON</button><br><br>
+    <h3>Resulting JSON:</h3>
+    <pre id="jsonResult"></pre>
+
+    <script>
+        function convertToJSON() {
+            const javaClass = document.getElementById("javaClass").value;
+            const lines = javaClass.split('\n');
+
+            const jsonObject = {};
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith("private")) {
+                    const parts = line.split(' ');
+                    const type = parts[1];
+                    let name = parts[2].replace(';', '');
+
+                    // Convert camelCase to snake_case for JSON keys (optional)
+                    const jsonKey = name.charAt(0).toLowerCase() + name.slice(1);
+
+                    // Assign default values based on type
+                    let value;
+                    if (type.includes("String")) value = "string";
+                    else if (type.includes("int") || type.includes("Integer")) value = 0;
+                    else if (type.includes("Long")) value = 0;
+                    else if (type.includes("Double")) value = 0.0;
+                    else if (type.includes("boolean") || type.includes("Boolean")) value = true;
+                    else if (type.includes("List")) value = [];
+                    else if (type.includes("Instant")) value = "2023-08-21T14:34:00Z";
+                    else value = null; // Default for unknown types
+
+                    jsonObject[jsonKey] = value;
+                }
+            });
+
+            document.getElementById("jsonResult").textContent = JSON.stringify(jsonObject, null, 2);
+        }
+    </script>
+</body>
+
+</html>
